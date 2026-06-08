@@ -1,0 +1,8 @@
+# Runtime uploads and travel log (persisted via Docker volumes)
+MainSite/volumes/gallery/*
+!MainSite/volumes/gallery/.gitkeep
+MainSite/volumes/data/*
+!MainSite/volumes/data/.gitkeep
+
+# Local backup archives
+MainSite/backups/

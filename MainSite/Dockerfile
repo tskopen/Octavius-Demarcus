@@ -9,12 +9,17 @@ RUN mkdir -p /run/nginx
 WORKDIR /var/www/site
 
 COPY public ./public
+COPY init-volumes.php ./init-volumes.php
+
+# Seed copies from git — merged into mounted volumes on each container start
+RUN mkdir -p seed/gallery seed/data \
+    && cp -a public/gallery/. seed/gallery/ \
+    && cp -a public/data/. seed/data/
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY start.sh /start.sh
 
-RUN mkdir -p /var/www/site/public/gallery /var/www/site/public/data \
-    && chmod +x /start.sh \
+RUN chmod +x /start.sh \
     && chown -R www-data:www-data /var/www/site/public
 
 CMD ["/start.sh"]

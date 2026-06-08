@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      # Bind mounts: files live on your machine at ./volumes/ (easy to browse, copy, zip)
+      - ./volumes/gallery:/var/www/site/public/gallery
+      - ./volumes/data:/var/www/site/public/data
+    restart: unless-stopped
