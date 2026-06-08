@@ -10,5 +10,5 @@ restartPolicyType = "ON_FAILURE"
 
 # Attach ONE Railway volume to this service:
 #   Mount path: /var/www/site/persist
-# Railway sets RAILWAY_VOLUME_MOUNT_PATH automatically — no extra env vars needed.
-# Stores gallery images and data/travels.json across deploys.
+# Do NOT mount only /public/gallery — travels.json lives in /persist/data/.
+# Railway sets RAILWAY_VOLUME_MOUNT_PATH automatically.

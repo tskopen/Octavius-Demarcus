@@ -1,6 +1,7 @@
 FROM php:8.2-fpm-alpine
 
 RUN apk add --no-cache nginx \
+    && mkdir -p /etc/nginx/conf.d \
     && echo "upload_max_filesize = 20M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size = 22M" >> /usr/local/etc/php/conf.d/uploads.ini
 

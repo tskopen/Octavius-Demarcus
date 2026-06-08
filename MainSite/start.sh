@@ -2,26 +2,76 @@
 set -e
 
 PUBLIC_DIR="/var/www/site/public"
-PERSIST_DIR=$(php -r "require '/var/www/site/persist-path.php'; echo persistRoot();")
+CONF_DIR="/etc/nginx/conf.d"
 
-export PERSIST_DIR
+is_mounted() {
+    _path=$(readlink -f "$1" 2>/dev/null || echo "$1")
+    grep -q " ${_path} " /proc/mounts 2>/dev/null
+}
 
-mkdir -p "${PERSIST_DIR}/gallery" "${PERSIST_DIR}/data"
-
-# When using an external persist dir (Railway volume), link public URLs to it
-if [ "$PERSIST_DIR" != "$PUBLIC_DIR" ]; then
-    rm -rf "${PUBLIC_DIR}/gallery" "${PUBLIC_DIR}/data"
-    ln -sf "${PERSIST_DIR}/gallery" "${PUBLIC_DIR}/gallery"
-    ln -sf "${PERSIST_DIR}/data" "${PUBLIC_DIR}/data"
+# Resolve persist root from env (shell only — generated-paths.php not written yet)
+if [ -n "${PERSIST_DIR:-}" ]; then
+    PERSIST_ROOT="${PERSIST_DIR}"
+elif [ -n "${RAILWAY_VOLUME_MOUNT_PATH:-}" ]; then
+    PERSIST_ROOT="${RAILWAY_VOLUME_MOUNT_PATH}"
 else
-    mkdir -p "${PUBLIC_DIR}/gallery" "${PUBLIC_DIR}/data"
+    PERSIST_ROOT="${PUBLIC_DIR}"
 fi
 
-echo "⟳ Persist root: ${PERSIST_DIR}"
+GALLERY_DIR="${PERSIST_ROOT}/gallery"
+DATA_DIR="${PERSIST_ROOT}/data"
+
+# Railway volume mounted directly on a leaf path
+case "${RAILWAY_VOLUME_MOUNT_PATH:-}" in
+    */gallery)
+        GALLERY_DIR="${RAILWAY_VOLUME_MOUNT_PATH}"
+        DATA_DIR="${PUBLIC_DIR}/data"
+        ;;
+    */data)
+        DATA_DIR="${RAILWAY_VOLUME_MOUNT_PATH}"
+        GALLERY_DIR="${PUBLIC_DIR}/gallery"
+        ;;
+esac
+
+# Honor bind mounts already attached under public/ (never rm these)
+if is_mounted "${PUBLIC_DIR}/gallery"; then
+    GALLERY_DIR="${PUBLIC_DIR}/gallery"
+fi
+if is_mounted "${PUBLIC_DIR}/data"; then
+    DATA_DIR="${PUBLIC_DIR}/data"
+fi
+
+mkdir -p "${GALLERY_DIR}" "${DATA_DIR}"
+
+# Runtime paths for PHP (written before init-volumes.php runs)
+cat > /var/www/site/generated-paths.php <<EOF
+<?php
+function persistRoot(): string { return '${PERSIST_ROOT}'; }
+function galleryDir(): string { return '${GALLERY_DIR}'; }
+function travelsFile(): string { return '${DATA_DIR}/travels.json'; }
+EOF
+
+export PERSIST_DIR="${PERSIST_ROOT}"
+
+mkdir -p "${CONF_DIR}"
+
+# Serve /gallery/ from persist dir when it is not under public/
+if [ "${GALLERY_DIR}" != "${PUBLIC_DIR}/gallery" ]; then
+    cat > "${CONF_DIR}/gallery.conf" <<EOF
+location /gallery/ {
+    alias ${GALLERY_DIR}/;
+}
+EOF
+else
+    rm -f "${CONF_DIR}/gallery.conf"
+fi
+
+echo "⟳ Gallery dir: ${GALLERY_DIR}"
+echo "⟳ Data dir:    ${DATA_DIR}"
 echo "⟳ Syncing git seed content into persistent storage..."
 php /var/www/site/init-volumes.php
 
-chown -R www-data:www-data "${PERSIST_DIR}/gallery" "${PERSIST_DIR}/data"
+chown -R www-data:www-data "${GALLERY_DIR}" "${DATA_DIR}"
 
 echo "⟳ Starting PHP-FPM..."
 php-fpm &

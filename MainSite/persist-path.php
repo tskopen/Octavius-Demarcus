@@ -1,5 +1,10 @@
 <?php
 
+if (is_file(__DIR__ . '/generated-paths.php')) {
+    require __DIR__ . '/generated-paths.php';
+    return;
+}
+
 function persistRoot(): string
 {
     if ($dir = getenv('PERSIST_DIR')) {
