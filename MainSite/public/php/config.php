@@ -1,8 +1,8 @@
 <?php
 $version = "1.1.0";
 
-$site_name = "Orange Chicken Travels";
-$site_tagline = "One crispy legend. Infinite destinations.";
+$site_name = "Octavius Demarcus Travels";
+$site_tagline = "One legendary traveler. Infinite destinations.";
 
 $gallery_dir = dirname(__DIR__) . '/gallery';
 $travels_file = dirname(__DIR__) . '/data/travels.json';
