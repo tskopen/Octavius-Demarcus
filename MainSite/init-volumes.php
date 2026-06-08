@@ -1,7 +1,9 @@
 <?php
 
-$galleryVol = '/var/www/site/public/gallery';
-$dataVol = '/var/www/site/public/data';
+require_once __DIR__ . '/persist-path.php';
+
+$galleryVol = galleryDir();
+$dataVol = persistRoot() . '/data';
 $seedGallery = '/var/www/site/seed/gallery';
 $seedData = '/var/www/site/seed/data';
 
@@ -107,6 +109,6 @@ function mergeTravels(string $seedFile, string $volFile): int
 }
 
 $imagesCopied = mergeGallery($seedGallery, $galleryVol, $allowedImageTypes);
-$travelsAdded = mergeTravels($seedData . '/travels.json', $dataVol . '/travels.json');
+$travelsAdded = mergeTravels($seedData . '/travels.json', travelsFile());
 
-echo "Volume sync: {$imagesCopied} image(s) copied, {$travelsAdded} travel log(s) merged.\n";
+echo 'Volume sync (' . persistRoot() . "): {$imagesCopied} image(s) copied, {$travelsAdded} travel log(s) merged.\n";

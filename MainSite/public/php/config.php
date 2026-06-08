@@ -1,10 +1,13 @@
 <?php
-$version = "1.1.0";
+require_once dirname(__DIR__, 2) . '/persist-path.php';
+
+$version = "1.2.0";
 
 $site_name = "Octavius Demarcus Travels";
 $site_tagline = "One legendary traveler. Infinite destinations.";
 
-$gallery_dir = dirname(__DIR__) . '/gallery';
-$travels_file = dirname(__DIR__) . '/data/travels.json';
+$persist_root = persistRoot();
+$gallery_dir = galleryDir();
+$travels_file = travelsFile();
 
 $allowed_image_types = ['jpg', 'jpeg', 'png', 'webp', 'gif'];

@@ -1,0 +1,14 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "/start.sh"
+healthcheckPath = "/php/index.php"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+
+# Attach ONE Railway volume to this service:
+#   Mount path: /var/www/site/persist
+# Railway sets RAILWAY_VOLUME_MOUNT_PATH automatically — no extra env vars needed.
+# Stores gallery images and data/travels.json across deploys.

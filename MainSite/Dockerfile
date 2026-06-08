@@ -9,6 +9,7 @@ RUN mkdir -p /run/nginx
 WORKDIR /var/www/site
 
 COPY public ./public
+COPY persist-path.php ./persist-path.php
 COPY init-volumes.php ./init-volumes.php
 
 # Seed copies from git — merged into mounted volumes on each container start

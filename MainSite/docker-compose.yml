@@ -3,8 +3,8 @@ services:
     build: .
     ports:
       - "8080:8080"
+    environment:
+      PERSIST_DIR: /var/www/site/persist
     volumes:
-      # Bind mounts: files live on your machine at ./volumes/ (easy to browse, copy, zip)
-      - ./volumes/gallery:/var/www/site/public/gallery
-      - ./volumes/data:/var/www/site/public/data
+      - ./volumes:/var/www/site/persist
     restart: unless-stopped

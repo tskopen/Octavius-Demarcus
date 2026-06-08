@@ -8,8 +8,6 @@ ARCHIVE="${BACKUP_DIR}/octavius-demarcus-${STAMP}.tar.gz"
 
 mkdir -p "${BACKUP_DIR}"
 
-tar -czf "${ARCHIVE}" \
-  -C "${ROOT}/volumes" \
-  gallery data
+tar -czf "${ARCHIVE}" -C "${ROOT}/volumes" .
 
 echo "Backup saved: ${ARCHIVE}"
