@@ -3,7 +3,7 @@
 require_once __DIR__ . '/persist-path.php';
 
 $galleryVol = galleryDir();
-$dataVol = persistRoot() . '/data';
+$dataVol = dirname(travelsFile());
 $seedGallery = '/var/www/site/seed/gallery';
 $seedData = '/var/www/site/seed/data';
 

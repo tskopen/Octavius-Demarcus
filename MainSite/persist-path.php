@@ -1,29 +1,44 @@
 <?php
 
-if (is_file(__DIR__ . '/generated-paths.php')) {
-    require __DIR__ . '/generated-paths.php';
-    return;
+function persistPaths(): array
+{
+    static $paths = null;
+
+    if ($paths !== null) {
+        return $paths;
+    }
+
+    $generated = __DIR__ . '/generated-paths.php';
+    if (is_file($generated)) {
+        $paths = require $generated;
+        if (is_array($paths)) {
+            return $paths;
+        }
+    }
+
+    $root = getenv('PERSIST_DIR') ?: getenv('RAILWAY_VOLUME_MOUNT_PATH') ?: '/var/www/site/public';
+    $root = rtrim($root, '/');
+
+    $paths = [
+        'root' => $root,
+        'gallery' => $root . '/gallery',
+        'travels' => $root . '/data/travels.json',
+    ];
+
+    return $paths;
 }
 
 function persistRoot(): string
 {
-    if ($dir = getenv('PERSIST_DIR')) {
-        return rtrim($dir, '/');
-    }
-
-    if ($dir = getenv('RAILWAY_VOLUME_MOUNT_PATH')) {
-        return rtrim($dir, '/');
-    }
-
-    return '/var/www/site/public';
+    return persistPaths()['root'];
 }
 
 function galleryDir(): string
 {
-    return persistRoot() . '/gallery';
+    return persistPaths()['gallery'];
 }
 
 function travelsFile(): string
 {
-    return persistRoot() . '/data/travels.json';
+    return persistPaths()['travels'];
 }

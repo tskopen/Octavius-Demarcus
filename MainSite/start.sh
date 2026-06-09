@@ -46,9 +46,11 @@ mkdir -p "${GALLERY_DIR}" "${DATA_DIR}"
 # Runtime paths for PHP (written before init-volumes.php runs)
 cat > /var/www/site/generated-paths.php <<EOF
 <?php
-function persistRoot(): string { return '${PERSIST_ROOT}'; }
-function galleryDir(): string { return '${GALLERY_DIR}'; }
-function travelsFile(): string { return '${DATA_DIR}/travels.json'; }
+return [
+    'root' => '${PERSIST_ROOT}',
+    'gallery' => '${GALLERY_DIR}',
+    'travels' => '${DATA_DIR}/travels.json',
+];
 EOF
 
 export PERSIST_DIR="${PERSIST_ROOT}"
