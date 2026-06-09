@@ -78,5 +78,8 @@ chown -R www-data:www-data "${GALLERY_DIR}" "${DATA_DIR}"
 echo "⟳ Starting PHP-FPM..."
 php-fpm &
 
-echo "⟳ Starting Nginx..."
+# Replace port placeholder with Railway's $PORT (default 8080 for local dev)
+sed -i "s/__PORT__/${PORT:-8080}/g" /etc/nginx/nginx.conf
+
+echo "⟳ Starting Nginx on port ${PORT:-8080}..."
 nginx -g "daemon off;"
