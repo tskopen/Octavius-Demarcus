@@ -25,9 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
             $error = 'Upload failed. Please try again.';
         } else {
-            $safe_base = preg_replace('/[^a-zA-Z0-9_-]+/', '-', strtolower($title ?: 'travel'));
-            $image_name = $safe_base . '-' . date('Ymd-His') . '.' . $ext;
+            $safe_base = trim(preg_replace('/[^a-zA-Z0-9_-]+/', '-', strtolower($title ?: 'travel')), '-');
+            $image_name = $safe_base . '.' . $ext;
             $target = $gallery_dir . '/' . $image_name;
+            $counter = 2;
+            while (file_exists($target)) {
+                $image_name = $safe_base . '-' . $counter . '.' . $ext;
+                $target = $gallery_dir . '/' . $image_name;
+                $counter++;
+            }
 
             if (!move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
                 $error = 'Could not save the image to the gallery folder.';
@@ -75,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main>
     <section class="page-header">
         <h1>Add to the Journey</h1>
-        <p>Upload a photo and optional story ù or just drop files into <code>public/gallery/</code>.</p>
+        <p>Upload a photo and optional story ¬ù or just drop files into <code>public/gallery/</code>.</p>
     </section>
 
     <section class="section">
@@ -119,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="upload-help">
             <h3>Other ways to add content</h3>
             <ul>
-                <li>Copy images directly into <code>public/gallery/</code> ù they appear automatically.</li>
+                <li>Copy images directly into <code>public/gallery/</code> ¬ù they appear automatically.</li>
                 <li>Edit <code>public/data/travels.json</code> to add or update travel stories by hand.</li>
             </ul>
         </div>
