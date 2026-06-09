@@ -41,8 +41,6 @@ if is_mounted "${PUBLIC_DIR}/data"; then
     DATA_DIR="${PUBLIC_DIR}/data"
 fi
 
-mkdir -p "${GALLERY_DIR}" "${DATA_DIR}"
-
 # Wait for the persist volume to be mounted and writable before proceeding.
 # Railway attaches the volume asynchronously; PHP-FPM must not start until the
 # mount is confirmed ready, otherwise file-access failures cause 502 errors.
@@ -61,6 +59,10 @@ done
 if [ "${WAIT_SECS}" -ge "${WAIT_LIMIT}" ]; then
     echo "✗ Volume mount at ${WAIT_PATH} not ready after ${WAIT_LIMIT}s — proceeding anyway." >&2
 fi
+
+# Create persistent subdirectories inside the now-confirmed volume mount so
+# that travels.json and uploaded images survive container restarts.
+mkdir -p "${GALLERY_DIR}" "${DATA_DIR}"
 
 # Runtime paths for PHP (written before init-volumes.php runs)
 cat > /var/www/site/generated-paths.php <<EOF
