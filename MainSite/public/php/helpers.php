@@ -62,30 +62,3 @@ function formatDate(string $date): string
     }
     return date('F j, Y', $timestamp);
 }
-
-function travelByImage(array $travels): array
-{
-    $map = [];
-
-    foreach ($travels as $entry) {
-        if (!empty($entry['image'])) {
-            $map[$entry['image']] = $entry;
-        }
-    }
-
-    return $map;
-}
-
-function travelLightboxCaption(array $entry): string
-{
-    $location = $entry['location'] ?? '';
-    $date = formatDate($entry['date'] ?? '');
-    $caption = $entry['caption'] ?? '';
-
-    $line = $location . ' · ' . $date;
-    if ($caption !== '') {
-        $line .= ' — ' . $caption;
-    }
-
-    return $line;
-}

@@ -3,9 +3,8 @@ include 'config.php';
 include 'helpers.php';
 
 $travels = loadTravels($travels_file);
-$gallery_images = scanGalleryImages($gallery_dir, $allowed_image_types);
 $recent = array_slice($travels, 0, 3);
-$photo_count = count($gallery_images);
+$photo_count = count(scanGalleryImages($gallery_dir, $allowed_image_types));
 $country_count = count(array_unique(array_column($travels, 'location')));
 ?>
 <!DOCTYPE html>
@@ -26,8 +25,8 @@ $country_count = count(array_unique(array_column($travels, 'location')));
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
-            <span class="hero-badge">World Traveler · Bold & Free</span>
-            <h1>The Adventures of Octavius Demarcus</h1>
+            <span class="hero-badge">World Traveler · Crispy & Bold</span>
+            <h1>The Adventures of Orange Chicken</h1>
             <p><?php echo htmlspecialchars($site_tagline); ?></p>
 
             <div class="hero-actions">
@@ -56,9 +55,9 @@ $country_count = count(array_unique(array_column($travels, 'location')));
         <div class="intro-inner">
             <div class="mascot">🐔</div>
             <div>
-                <h2>Meet Octavius Demarcus</h2>
+                <h2>Meet the Traveler</h2>
                 <p>
-                    This is a living travel diary for one very determined traveler.
+                    This is a living travel diary for one very determined piece of orange chicken.
                     From street markets to mountaintops, every journey gets a photo and a story.
                 </p>
                 <p class="hint">
@@ -78,7 +77,26 @@ $country_count = count(array_unique(array_column($travels, 'location')));
         <?php else: ?>
             <div class="travel-grid">
                 <?php foreach ($recent as $entry): ?>
-                    <?php include 'travel-card.php'; ?>
+                    <article class="travel-card">
+                        <?php if (!empty($entry['image'])): ?>
+                            <img
+                                src="/gallery/<?php echo htmlspecialchars($entry['image']); ?>"
+                                alt="<?php echo htmlspecialchars($entry['title'] ?? 'Travel photo'); ?>"
+                                loading="lazy"
+                            >
+                        <?php else: ?>
+                            <div class="travel-card-placeholder">🍊</div>
+                        <?php endif; ?>
+
+                        <div class="travel-card-body">
+                            <p class="travel-meta">
+                                <?php echo htmlspecialchars($entry['location'] ?? ''); ?>
+                                · <?php echo formatDate($entry['date'] ?? ''); ?>
+                            </p>
+                            <h3><?php echo htmlspecialchars($entry['title'] ?? 'Untitled'); ?></h3>
+                            <p><?php echo htmlspecialchars($entry['caption'] ?? ''); ?></p>
+                        </div>
+                    </article>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -90,7 +108,6 @@ $country_count = count(array_unique(array_column($travels, 'location')));
 </main>
 
 <?php include 'footer.php'; ?>
-<?php include 'lightbox.php'; ?>
 
 </body>
 </html>
