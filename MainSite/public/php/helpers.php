@@ -28,12 +28,17 @@ function scanGalleryImages(string $dir, array $extensions): array
         }
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if (in_array($ext, $extensions, true)) {
-            $images[] = $file;
+            $fullPath = $dir . DIRECTORY_SEPARATOR . $file;
+            $mtime = filemtime($fullPath);
+            $images[] = [
+                'filename' => $file,
+                'mtime'    => $mtime !== false ? $mtime : 0,
+            ];
         }
     }
 
-    rsort($images);
-    return $images;
+    usort($images, fn($a, $b) => $b['mtime'] <=> $a['mtime']);
+    return array_column($images, 'filename');
 }
 
 function saveTravelEntry(string $file, array $entry): bool
