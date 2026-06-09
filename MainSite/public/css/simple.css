@@ -520,6 +520,138 @@ code {
   color: #C62828;
 }
 
+/* MODAL / LIGHTBOX */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(30, 10, 0, 0.82);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.modal.is-open {
+  display: flex;
+  opacity: 1;
+}
+
+.modal.is-closing {
+  opacity: 0;
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: var(--radius-l);
+  box-shadow: 0 24px 64px rgba(30, 10, 0, 0.45);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modal-pop 0.25s ease;
+}
+
+@keyframes modal-pop {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-gray-900);
+  color: white;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.modal-close:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+}
+
+/* Image-only modal */
+.modal-image {
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--radius-l);
+}
+
+/* Expanded travel card modal */
+.modal-travel-expanded {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.modal-travel-expanded .modal-image {
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+  max-height: 55vh;
+  object-fit: cover;
+}
+
+.modal-travel-placeholder {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  background: linear-gradient(135deg, var(--color-gray-200), var(--color-gray-300));
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+}
+
+.modal-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.modal-meta {
+  font-size: var(--font-s);
+  font-weight: 700;
+  color: var(--primary-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.5rem;
+}
+
+.modal-body h2 {
+  margin: 0 0 0.75rem;
+  font-size: var(--font-xl);
+  color: var(--primary-action-color);
+}
+
+.modal-body p {
+  margin: 0;
+  color: var(--color-gray-700);
+  line-height: 1.7;
+}
+
+/* Pointer cursor on interactive cards */
+.gallery-item {
+  cursor: pointer;
+}
+
+.travel-card {
+  cursor: pointer;
+}
+
 /* FOOTER */
 
 .site-footer {
@@ -549,5 +681,23 @@ code {
 
   .mascot {
     margin: 0 auto;
+  }
+
+  .modal {
+    padding: 0.75rem;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    max-height: 95vh;
+    border-radius: var(--radius-m) var(--radius-m) 0 0;
+  }
+
+  .modal-travel-expanded .modal-image {
+    max-height: 40vh;
+  }
+
+  .modal-body {
+    padding: 1.25rem;
   }
 }
